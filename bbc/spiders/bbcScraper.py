@@ -8,8 +8,11 @@ class NewsSpider(scrapy.Spider):
 
     def parse(self, response):
         for content in response.css('div.media__content') :
+            summary = content.css(".media__summary::text").extract_first()
+            if summary is not None:
+                summary = summary.strip()
             yield {
                 'title': content.css('a.media__link::text').extract_first().strip(),
-                'summary' : content.css(".media__summary::text").extract_first().strip(),
-                'link' : content.css("a::attr(href)").extract_first(),
+                'summary' : summary,
+                'link': content.css("a::attr(href)").extract_first(),
             }
